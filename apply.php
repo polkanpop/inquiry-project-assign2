@@ -15,7 +15,7 @@
 
         
 
-        <form id="application" method="post" action="http://mercury.swin.edu.au/it000000/formtest.php" novalidate ="novalidate">
+        <form id="application" method="post" action="processEOI.php" novalidate ="novalidate">
 
             <h1>Application Form</h1>
 
