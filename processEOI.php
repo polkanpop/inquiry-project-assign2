@@ -32,6 +32,7 @@ function sanitize_input($data) {
 $jobRef = sanitize_input($_POST['jobRef']);
 $firstName = sanitize_input($_POST['1stName']);
 $lastName = sanitize_input($_POST['lastname']);
+$gender = sanitize_input($_POST['gender']);
 $dob = sanitize_input($_POST['DOB']);
 $email = sanitize_input($_POST['email']);
 $phone = sanitize_input($_POST['teleNum']);
@@ -67,7 +68,6 @@ if (!empty($errors)) {
         echo "<li>$error</li>";
     }
     echo "</ul>";
-    echo "<a href='javascript:history.back()'>Go Back</a>";
     exit();
 }
 

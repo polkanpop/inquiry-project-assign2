@@ -138,7 +138,7 @@
             
         </form>
 
-        <a href="index.html" id="back-button">Go Back</a>
+        <a href="index.php" id="back-button">Go Back</a>
             
     </div>
     <br>
