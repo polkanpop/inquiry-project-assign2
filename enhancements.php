@@ -1,3 +1,10 @@
+<?php
+
+
+// Include the menu
+include_once "menu.inc";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,10 +31,6 @@
     </style>
 </head>
 <body>
-    <?php
-        include_once "menu.inc";
-    ?>
-
     <div class="container">
         <h1>Website Enhancements</h1>
 
@@ -46,7 +49,7 @@
 }
             </div>
             <p>Reference: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation" target="_blank">MDN Web Docs - CSS Animations</a></p>
-            <p>Applied here: <a href="index.html#hero">Home Page Hero Section</a></p>
+            <p>Applied here: <a href="index.php#hero">Home Page Hero Section</a></p>
         </div>
 
         <div class="enhancement">
@@ -67,7 +70,7 @@
 }
             </div>
             <p>Reference: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries" target="_blank">MDN Web Docs - Using Media Queries</a></p>
-            <p>Applied throughout the website. Example: <a href="index.html">Home Page</a></p>
+            <p>Applied throughout the website. Example: <a href="index.php">Home Page</a></p>
         </div>
 
         <div class="enhancement">
@@ -89,15 +92,75 @@ details[open] summary {
 }
             </div>
             <p>Reference: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details" target="_blank">MDN Web Docs - &lt;details&gt;: The Details disclosure element</a></p>
-            <p>Applied here: <a href="jobs.html">Jobs Page</a></p>
+            <p>Applied here: <a href="jobs.php">Jobs Page</a></p>
+        </div>
+
+        <div class="enhancement">
+            <h2>4. Secure Manager Authentication System</h2>
+            <p>We've implemented a secure authentication system for managers, including registration, login, and logout functionality.</p>
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Secure password hashing using PHP's password_hash() function</li>
+                <li>Protection against brute-force attacks by limiting login attempts</li>
+                <li>Session-based authentication to prevent unauthorized access</li>
+                <li>Logout functionality to securely end user sessions</li>
+            </ul>
+            <h3>Implementation Highlights:</h3>
+            <div class="code">
+// Password hashing
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+// Login attempt limiting
+if ($login_attempts >= 3 && (time() - $last_attempt) < 900) {
+    $error = "Account is locked. Please try again later.";
+}
+
+// Session-based authentication check
+if (!isset($_SESSION['manager_id'])) {
+    header("Location: login.php");
+    exit();
+}
+            </div>
+            <p>Reference: <a href="https://www.php.net/manual/en/book.password.php" target="_blank">PHP Manual - Password Hashing</a></p>
+            <p>Applied in: register.php, login.php, manage.php, and logout.php</p>
+        </div>
+
+        <div class="enhancement">
+            <h2>5. Server-Side Validation for EOI Submissions</h2>
+            <p>We've implemented robust server-side validation for all EOI (Expression of Interest) submissions to ensure data integrity and security.</p>
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Input sanitization to prevent XSS attacks</li>
+                <li>Strict validation of all form fields</li>
+                <li>Custom error messages for invalid inputs</li>
+                <li>Prevention of duplicate submissions</li>
+            </ul>
+            <h3>Implementation Highlights:</h3>
+            <div class="code">
+// Input sanitization
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+// Field validation example
+if (empty($jobRef) || !preg_match("/^[A-Za-z0-9]{5}$/", $jobRef)) {
+    $errors[] = "Invalid Job Reference Number";
+}
+
+// Prepared statements to prevent SQL injection
+$stmt = $conn->prepare("INSERT INTO EOI (jobRef, firstName, lastName, dob, gender, email, phone, skills, additionalSkills) VALUES (?, ?, ?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssssssss", $jobRef, $firstName, $lastName, $dob, $gender, $email, $phone, $skills, $additionalSkills);
+            </div>
+            <p>Reference: <a href="https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php" target="_blank">PHP Manual - Prepared Statements</a></p>
+            <p>Applied in: processEOI.php</p>
         </div>
     </div>
-    <br>
-    <br>
-    
+
     <?php
     include_once "footer.inc";
     ?>
-
 </body>
 </html>
