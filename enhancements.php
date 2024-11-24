@@ -97,22 +97,26 @@ details[open] summary {
 
         <div class="enhancement">
             <h2>4. Secure Manager Authentication System</h2>
-            <p>We've implemented a secure authentication system for managers, including registration, login, and logout functionality.</p>
+            <p>We've implemented a robust authentication system for managers, including registration, login, and logout functionality.</p>
             <h3>Key Features:</h3>
             <ul>
                 <li>Secure password hashing using PHP's password_hash() function</li>
                 <li>Protection against brute-force attacks by limiting login attempts</li>
                 <li>Session-based authentication to prevent unauthorized access</li>
                 <li>Logout functionality to securely end user sessions</li>
+                <li>Immediate lockout message after 3 failed login attempts</li>
             </ul>
             <h3>Implementation Highlights:</h3>
             <div class="code">
 // Password hashing
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Login attempt limiting
-if ($login_attempts >= 3 && (time() - $last_attempt) < 900) {
-    $error = "Account is locked. Please try again later.";
+// Login attempt limiting and lockout
+if ($login_attempts >= 3) {
+    $stmt = $conn->prepare("UPDATE managers SET login_attempts = ?, lockout_expiration = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE username = ?");
+    $stmt->bind_param("is", $login_attempts, $username);
+    $stmt->execute();
+    $lockout_message = "Account is locked. Please try again later.";
 }
 
 // Session-based authentication check
@@ -133,7 +137,7 @@ if (!isset($_SESSION['manager_id'])) {
                 <li>Input sanitization to prevent XSS attacks</li>
                 <li>Strict validation of all form fields</li>
                 <li>Custom error messages for invalid inputs</li>
-                <li>Prevention of duplicate submissions</li>
+                <li>Prevention of null values in required fields</li>
             </ul>
             <h3>Implementation Highlights:</h3>
             <div class="code">
@@ -146,8 +150,8 @@ function sanitize_input($data) {
 }
 
 // Field validation example
-if (empty($jobRef) || !preg_match("/^[A-Za-z0-9]{5}$/", $jobRef)) {
-    $errors[] = "Invalid Job Reference Number";
+if (empty($gender) || !in_array($gender, ['male', 'female', 'other'])) {
+    $errors[] = "Invalid Gender";
 }
 
 // Prepared statements to prevent SQL injection
@@ -157,7 +161,6 @@ $stmt->bind_param("sssssssss", $jobRef, $firstName, $lastName, $dob, $gender, $e
             <p>Reference: <a href="https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php" target="_blank">PHP Manual - Prepared Statements</a></p>
             <p>Applied in: processEOI.php</p>
         </div>
-    </div>
 
     <?php
     include_once "footer.inc";
