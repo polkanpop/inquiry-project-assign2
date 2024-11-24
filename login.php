@@ -1,9 +1,9 @@
 <?php
 session_start();
 
+
 require_once("settings.php");
 // Database connection
-
 $username = "$user";
 $password = "$pass";
 $dbname = "$sql_db";
@@ -15,6 +15,7 @@ if ($conn->connect_error) {
 }
 
 $error = "";
+$lockout_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
@@ -38,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $lockout_result = $stmt->get_result()->fetch_assoc();
         
         if ($login_attempts >= 3 && !$lockout_result['lockout_expired']) {
-            $error = "Account is locked. Please try again later.";
+            $lockout_message = "Account is locked. Please try again later.";
         } else {
             // Verify password
             $stmt = $conn->prepare("SELECT id, password FROM managers WHERE username = ?");
@@ -66,13 +67,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($login_attempts >= 3) {
                         $stmt = $conn->prepare("UPDATE managers SET login_attempts = ?, lockout_expiration = DATE_ADD(NOW(), INTERVAL 2 MINUTE) WHERE username = ?");
                         $stmt->bind_param("is", $login_attempts, $username);
+                        $stmt->execute();
+                        $lockout_message = "Account is locked. Please try again later.";
                     } else {
                         $stmt = $conn->prepare("UPDATE managers SET login_attempts = ? WHERE username = ?");
                         $stmt->bind_param("is", $login_attempts, $username);
+                        $stmt->execute();
+                        $error = "Invalid username or password. Attempts remaining: " . (3 - $login_attempts);
                     }
-                    $stmt->execute();
-                    
-                    $error = "Invalid username or password.";
                 }
             } else {
                 $error = "Invalid username or password.";
@@ -100,7 +102,9 @@ $conn->close();
     <div class="container">
         <h1>Manager Login</h1>
         <?php 
-        if (!empty($error)) { 
+        if (!empty($lockout_message)) { 
+            echo "<p class='lockout'>$lockout_message</p>"; 
+        } elseif (!empty($error)) { 
             echo "<p class='error'>$error</p>"; 
         }
         if (isset($_SESSION['message'])) {

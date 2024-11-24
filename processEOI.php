@@ -50,6 +50,9 @@ if (empty($firstName) || !preg_match("/^[A-Za-z]+$/", $firstName)) {
 if (empty($lastName) || !preg_match("/^[A-Za-z]+$/", $lastName)) {
     $errors[] = "Invalid Last Name";
 }
+if (empty($gender) || !in_array($gender, ['male', 'female', 'other'])) {
+    $errors[] = "Invalid Gender";
+}
 if (empty($dob) || !preg_match("/^\d{2}\/\d{2}\/\d{4}$/", $dob)) {
     $errors[] = "Invalid Date of Birth";
 }
