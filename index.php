@@ -62,7 +62,10 @@
         <section class="content">
             <h2>Demo video</h2>
             <p>
-                Here is a <a href="https://youtu.be/TPdh9qUfS3M">link</a>  to a demo video of the site.
+                Here is a <a href="https://youtu.be/TPdh9qUfS3M">link</a>  to the first demo (assign1) video of the site.
+            </p>
+            <p>
+                Here is a <a href="https://youtu.be/c-GHctIl-aU">link</a>  to the second demo (assign2) video of the site.
             </p>
         </section>
     </div>

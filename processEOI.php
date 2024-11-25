@@ -102,12 +102,16 @@ $stmt->bind_param("sssssssss", $jobRef, $firstName, $lastName, $dob, $gender, $e
 
 if ($stmt->execute()) {
     $eoiNumber = $stmt->insert_id;
-    echo "<h2>Application Submitted Successfully</h2>";
-    echo "<p>Your EOI Number is: " . $eoiNumber . "</p>";
-    echo "<p>Current Status: New</p>";
-    echo "<a href='index.php'>Return to Home</a>";
+    echo "<div style='font-family: Arial, sans-serif; text-align: center; margin: 20px; padding: 20px; border: 1px solid #0099cc; border-radius: 10px; background-color: #e6f7ff;'>"; //box
+    echo "<h2 style='color: #0073e6;'>Application Submitted Successfully</h2>"; // heading
+    echo "<p style='font-size: 16px; color: #003366;'>Your EOI Number is: <strong>" . $eoiNumber . "</strong></p>"; //  text
+    echo "<p style='font-size: 16px; color: #004080;'>Current Status: <strong>New</strong></p>"; 
+    echo "<a href='index.php' style='display: inline-block; margin-top: 15px; padding: 10px 15px; color: #fff; background-color: #0073e6; text-decoration: none; border-radius: 5px;'>Return to Home</a>"; //  button
+    echo "</div>";
 } else {
-    die("Error: " . $sql . "<br>" . $conn->error);
+    die("<div style='font-family: Arial, sans-serif; text-align: center; color: red; background-color: #ffeeee; padding: 10px; border-radius: 5px; margin: 20px;'>
+            <p>Error: " . $sql . "<br>" . $conn->error . "</p>
+         </div>");
 }
 
 $stmt->close();
